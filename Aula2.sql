@@ -55,6 +55,19 @@ SELECT * FROM Aluno WHERE nome NOT LIKE 'Rafael%';
 SELECT * FROM Aluno WHERE altura IN (1.5, 1.6, 1.7, 1.8);
 SELECT * FROM Aluno WHERE altura NOT IN (1.5, 1.6, 1.7, 1.8);
 
+SELECT * FROM Aluno WHERE altura < 1.8 AND nome LIKE 'Rafael%';
+SELECT * FROM Aluno WHERE altura < 1.8 && nome LIKE 'Rafael%';
+SELECT * FROM Aluno WHERE altura < 1.8 OR nome LIKE 'Rafael%';
+SELECT * FROM Aluno WHERE altura < 1.8 || nome LIKE 'Rafael%';
+SELECT * FROM Aluno WHERE altura < 1.8 XOR nome LIKE 'Rafael%';
+
+SELECT * FROM Aluno WHERE NOT altura = 1.80;
+SELECT * FROM Aluno WHERE ! ( altura = 1.80 );
+
+SELECT * FROM Aluno ORDER BY altura;
+SELECT * FROM Aluno ORDER BY altura, nome;
+
+SELECT * FROM Aluno ORDER BY altura DESC, nome ASC;
 
 SELECT * FROM Aluno;
 SELECT * FROM Professor;
