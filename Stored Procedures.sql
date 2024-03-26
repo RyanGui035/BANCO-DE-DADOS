@@ -40,6 +40,8 @@ variável total ao executar a chamada da
 Procedure. Incluir mais um país na nossa tabela:
 ARGENTINA*/
 
+INSERT INTO pais Values (NULL, "ARGENTINA");
+
 SET DELIMITER $$
 CREATE PROCEDURE  Verificar_Quantidade (OUT quantidade INT)
 BEGIN
@@ -47,8 +49,6 @@ BEGIN
 	END $$
     
 SET DELIMITER ;
-
-INSERT INTO pais Values (NULL, "ARGENTINA");
 
 CALL Verificar_Quantidade(@total);
 SELECT @total as TOTAL;
@@ -61,6 +61,9 @@ como parâmetro. Antes inserem mais alguns
 países em nossa tabela. Inserir os países BOLÍVIA
 e URUGUAI.*/
 
+INSERT INTO pais Values (NULL, "BOLIVIA"),
+			(NULL, "URUGUAI");
+
 SET DELIMITER $$
 CREATE PROCEDURE Selecionar_paises (IN quantidade INT)
 BEGIN
@@ -69,9 +72,6 @@ BEGIN
 	END $$
     
 SET DELIMITER ;
-
-INSERT INTO pais Values (NULL, "BOLIVIA"),
-						(NULL, "URUGUAI");
 
 CALL Selecionar_paises(4);
 
