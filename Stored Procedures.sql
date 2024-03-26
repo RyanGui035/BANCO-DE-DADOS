@@ -1,77 +1,92 @@
-DROP DATABASE bd_aulas_procedures;
+CREATE SCHEMA IF NOT EXISTS bd_aula_procedures DEFAULT CHARACTER SET utf8;
+USE bd_aula_procedures;
 
-CREATE SCHEMA IF NOT EXISTS bd_aulas_procedures DEFAULT CHARACTER SET utf8;
-USE bd_aulas_procedures;
-
-/*Criando tabela Pais*/
-
-CREATE TABLE pais(
+CREATE TABLE IF NOT EXISTS pais(
 id_pais INT NOT NULL AUTO_INCREMENT,
 nome_pais VARCHAR (200) NOT NULL,
-PRIMARY KEY (id_pais)
-)ENGINE=InnoDB;
+PRIMARY KEY(id_pais)
+);
 
-INSERT INTO pais VALUES (NULL, "BRASIL"),
-						(NULL, "CHILE"),
-                        (NULL, "ARGENTINA"),
-                        (NULL, "BOLIVIA"),
+INSERT INTO pais Values (NULL, "BRASIL"),
+						(NULL, "CHILE");
+                        
+/*Criar uma procedure (listar_paises)
+para caso tenha sido passado eu
+busco um país com aquele id, em caso contrário serão
+retornados todos os registros da tabela.*/
+                        
+SET DELIMITER $$
+
+DROP PROCEDURE IF EXISTS  listar_paises $$
+CREATE PROCEDURE  listar_paises(IN id INT)
+BEGIN
+		IF (id IS NULL) THEN
+			SELECT * FROM  pais;
+		ELSE
+			SELECT * FROM pais WHERE id_pais = id;
+		END IF;
+	END $$
+    
+SET DELIMITER ; 
+
+CALL  listar_paises(NULL);
+CALL  listar_paises(1);
+CALL  listar_paises(2);
+
+/*1) Criar uma procedure (Verificar_Quantidade_Pais)
+para retornar a quantidade de países cadastrados
+na tabela pais do nosso exemplo. Atribuir para a
+variável total ao executar a chamada da
+Procedure. Incluir mais um país na nossa tabela:
+ARGENTINA*/
+
+SET DELIMITER $$
+CREATE PROCEDURE  Verificar_Quantidade (OUT quantidade INT)
+BEGIN
+			SELECT COUNT(*) INTO quantidade FROM pais;
+	END $$
+    
+SET DELIMITER ;
+
+INSERT INTO pais Values (NULL, "ARGENTINA");
+
+CALL Verificar_Quantidade(@total);
+SELECT @total as TOTAL;
+
+
+/* 2) Criar uma procedure (Selecionar_Paises) para
+fazer um select na tabela pais, limitando a
+quantidade de registros pela quantidade recebida
+como parâmetro. Antes inserem mais alguns
+países em nossa tabela. Inserir os países BOLÍVIA
+e URUGUAI.*/
+
+SET DELIMITER $$
+CREATE PROCEDURE Selecionar_paises (IN quantidade INT)
+BEGIN
+			SELECT * FROM pais
+            LIMIT quantidade;
+	END $$
+    
+SET DELIMITER ;
+
+INSERT INTO pais Values (NULL, "BOLIVIA"),
 						(NULL, "URUGUAI");
 
+CALL Selecionar_paises(4);
 
-DELIMITER $$
-DROP PROCEDURE IF EXISTS listar_paises $$
-CREATE PROCEDURE listar_paises (IN id INT)
+/*3 ) Criar uma procedure(Selecionar_Paises_Iniciando_Com) 
+para fazer um select na tabela pais, retornando 
+os registros deacordo com a letra recebida como
+parâmetro (Dica:comando CONCAT é para concatenar). */
+
+SET DELIMITER $$
+CREATE PROCEDURE Selecionar_Paises_Iniciando_Com (IN letra VARCHAR(1))
 BEGIN
-  IF (id IS NULL) THEN
-  SELECT * FROM pais;
-  ELSE
-  SELECT * FROM pais WHERE id_pais = id;
-  END IF;
-  END $$
-  DELIMITER ;
-  
-  /*CHAMANDO PROCEDURE*/
-  
-  CALL listar_paises(NULL);
-  
-  CALL listar_paises(1);
+			SELECT * FROM pais WHERE nome_pais LIKE CONCAT(letra,'%');
+            
+	END $$
+    
+SET DELIMITER ;
 
-
-
-
-  CALL Verificar_Quantidade_Pais(@total);
-  SELECT @total;
-  
-  DELIMITER $$
-  CREATE PROCEDURE Verificar_Quantidade_Pais (OUT quantidade INT)
-  BEGIN
-    SELECT COUNT(*) INTO Quantidade FROM Pais;
-  END$$
-  DELIMITER ;
-  
-  
-  
-  
-   DELIMITER $$
-  CREATE PROCEDURE Selecionar_Paises (IN quantidade INT)
-  BEGIN
-    SELECT * FROM Pais
-    LIMIT quantidade;
-  END$$
-  DELIMITER ;
-  
-  
-  CALL Selecionar_Paises (4);
-  
-  DELIMITER $$
-  CREATE PROCEDURE Selecionar_Paises_Iniciando_Com (IN letra VARCHAR(1))
-  BEGIN
-
-    SELECT * FROM pais WHERE nome_pais LIKE CONCAT (letra,'%');
-  END$$
-  DELIMITER ;
-  
-  CALL Selecionar_Paises_Iniciando_Com('A');
-  
-  
-  
+CALL Selecionar_Paises_Iniciando_Com('F');
