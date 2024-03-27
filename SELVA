@@ -1,0 +1,26 @@
+DELIMITER //
+
+CREATE PROCEDURE cadastrar_emprestimo(
+    IN usuario_id INT,
+    IN livro_id INT
+)
+BEGIN
+    -- Define a data de empréstimo como a data atual
+    SET @dt_emprestimo = CURDATE();
+
+    -- Define a data de devolução como 30 dias após a data de empréstimo
+    SET @dt_devolucao = ADDDATE(@dt_emprestimo, 30);
+
+    -- Insere o empréstimo na tabela emprestimo
+    INSERT INTO emprestimo (usuario_id_usuario, livro_id_livro, data_emprestimo, data_devolucao)
+    VALUES (usuario_id, livro_id, @dt_emprestimo, @dt_devolucao);
+
+    -- Atualiza a quantidade de empréstimos do usuário
+    UPDATE usuario
+    SET quant_emprest_usuario = quant_emprest_usuario + 1
+    WHERE id_usuario = usuario_id;
+
+    SELECT "Empréstimo cadastrado com sucesso." AS mensagem;
+END //
+
+DELIMITER ;
